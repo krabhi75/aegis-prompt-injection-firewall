@@ -1,0 +1,9 @@
+{
+  "user_message": "What holidays affect retail promotions in October?",
+  "attachments": [
+    {
+      "source": "api",
+      "text": "{\"holidays\": [\"Diwali\", \"Halloween\"]}"
+    }
+  ]
+}

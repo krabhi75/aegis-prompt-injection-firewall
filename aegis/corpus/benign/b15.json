@@ -1,0 +1,9 @@
+{
+  "user_message": "OCR note says meeting at 3pm \u2014 remind me.",
+  "attachments": [
+    {
+      "source": "ocr",
+      "text": "Meeting with finance at 3:00 PM in room 4B."
+    }
+  ]
+}

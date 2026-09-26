@@ -1,0 +1,9 @@
+{
+  "user_message": "Summarize the HTML product page.",
+  "attachments": [
+    {
+      "source": "html",
+      "text": "<html><body><h1>Nova X1</h1><p>Ultrabook with 18hr battery.</p></body></html>"
+    }
+  ]
+}

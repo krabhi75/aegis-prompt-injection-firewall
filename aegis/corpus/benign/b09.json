@@ -1,0 +1,9 @@
+{
+  "user_message": "List open action items from this email thread.",
+  "attachments": [
+    {
+      "source": "email",
+      "text": "From: boss@corp.example\nSubject: Actions\n\nPlease update the dashboard by Friday."
+    }
+  ]
+}

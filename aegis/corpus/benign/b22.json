@@ -1,0 +1,9 @@
+{
+  "user_message": "Provide a TLDR of the policy PDF text.",
+  "attachments": [
+    {
+      "source": "pdf",
+      "text": "[page 1]\nAcceptable Use Policy\nEmployees must protect customer data.\n[page 2]\nReport incidents within 24 hours."
+    }
+  ]
+}

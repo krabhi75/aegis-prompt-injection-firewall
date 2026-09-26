@@ -1,0 +1,12 @@
+.git
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+aegis/data/aegis.db
+.pytest_cache/
+.streamlit/
+.DS_Store
+*.log

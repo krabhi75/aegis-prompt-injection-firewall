@@ -1,0 +1,9 @@
+{
+  "user_message": "Extract action owners from this email.",
+  "attachments": [
+    {
+      "source": "email",
+      "text": "From: pm@corp.example\nSubject: Owners\n\nRiya owns QA. Arjun owns release."
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "user_message": "Parse this API response and tell me if service is healthy.",
+  "attachments": [
+    {
+      "source": "api",
+      "text": {
+        "ok": true,
+        "latency_ms": 42
+      }
+    }
+  ]
+}

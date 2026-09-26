@@ -1,0 +1,9 @@
+{
+  "user_message": "Summarize competitor pricing table.",
+  "attachments": [
+    {
+      "source": "text",
+      "text": "Competitor A: $999. Competitor B: $1099. Us: $1049."
+    }
+  ]
+}

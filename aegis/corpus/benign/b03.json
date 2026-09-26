@@ -1,0 +1,9 @@
+{
+  "user_message": "Please summarize this meeting note.",
+  "attachments": [
+    {
+      "source": "markdown",
+      "text": "# Meeting\nDiscussed roadmap, hiring, and budget. No action on security tools."
+    }
+  ]
+}
