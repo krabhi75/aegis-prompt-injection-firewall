@@ -107,17 +107,17 @@ def build() -> Path:
     prs.slide_width = Inches(13.333)
     prs.slide_height = Inches(7.5)
 
-    # 1 Title
+    # 01 Title + team
     s = prs.slides.add_slide(prs.slide_layouts[6])
     _add_bg(s, INK)
     accent_band = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, Inches(5.9), Inches(13.333), Inches(1.6))
     accent_band.fill.solid()
     accent_band.fill.fore_color.rgb = ACCENT2
     accent_band.line.fill.background()
-    box = s.shapes.add_textbox(Inches(0.8), Inches(1.6), Inches(11.5), Inches(1))
+    box = s.shapes.add_textbox(Inches(0.8), Inches(1.4), Inches(11.5), Inches(1))
     r = box.text_frame.paragraphs[0].add_run()
     _set_run(r, "AEGIS GUARD", 48, True, WHITE)
-    box2 = s.shapes.add_textbox(Inches(0.8), Inches(2.5), Inches(11.5), Inches(1.2))
+    box2 = s.shapes.add_textbox(Inches(0.8), Inches(2.3), Inches(11.5), Inches(1.4))
     tf = box2.text_frame
     tf.word_wrap = True
     p = tf.paragraphs[0]
@@ -125,38 +125,39 @@ def build() -> Path:
     _set_run(r, "Behavioral Twin Prompt Injection Firewall", 24, False, RGBColor(0x9A, 0xE6, 0xC5))
     p2 = tf.add_paragraph()
     r2 = p2.add_run()
-    _set_run(r2, "ET AI Hackathon: Agentic Edition  ·  Problem 2  ·  Solo", 16, False, RGBColor(0xC5, 0xD2, 0xCC))
-    box3 = s.shapes.add_textbox(Inches(0.8), Inches(6.2), Inches(11.5), Inches(0.9))
+    _set_run(r2, "Agentic Cybersecurity  ·  Solo build  ·  Python", 16, False, RGBColor(0xC5, 0xD2, 0xCC))
+    p3 = tf.add_paragraph()
+    r3 = p3.add_run()
+    _set_run(r3, "Team: Abhishek — Product · Architecture · Full-stack implementation", 15, False, RGBColor(0xE6, 0xF5, 0xF2))
+    box3 = s.shapes.add_textbox(Inches(0.8), Inches(6.15), Inches(11.5), Inches(0.9))
     tf3 = box3.text_frame
     r = tf3.paragraphs[0].add_run()
-    _set_run(r, "Self-estimated 9-blocker:  F3  /  D2", 20, True, WHITE)
+    _set_run(r, "Live demo  ·  aegis-prompt-injection-firewall.vercel.app", 16, True, WHITE)
     p = tf3.add_paragraph()
     r = p.add_run()
-    _set_run(r, "Live demo  ·  aegis-prompt-injection-firewall.vercel.app", 14, False, RGBColor(0xE6, 0xF5, 0xF2))
+    _set_run(r, "GitHub  ·  github.com/krabhi75/aegis-prompt-injection-firewall", 14, False, RGBColor(0xE6, 0xF5, 0xF2))
 
-    # 2 Problem
+    # 02 Problem
     s = prs.slides.add_slide(prs.slide_layouts[6])
     _add_bg(s)
     _bar(s)
-    _title(s, "The enterprise risk")
+    _title(s, "Problem statement")
     _card(s, 0.7, 1.4, 3.9, 2.4, "Agents touch untrusted content", "PDF, email, HTML, OCR, and APIs now feed tool-using agents. Attackers hide instructions inside those documents.")
     _card(s, 4.8, 1.4, 3.9, 2.4, "Indirect prompt injection", "A single poisoned attachment can trigger get_secret, send_email, or shell tools — without the user noticing.")
     _card(s, 8.9, 1.4, 3.7, 2.4, "Classifiers are not enough", "Keyword / LLM jailbreak detectors ask: “Does this look bad?” Attackers evade that every day.", BLOCK)
     _body(s, [
-        "Accenture clients are shipping copilots and agents into production workflows.",
+        "Enterprises are shipping copilots and agents into production workflows.",
         "Without a runtime control plane, every document becomes an attack surface.",
     ], top=4.2, size=15)
     _footer(s, "02")
 
-    # 3 Insight
+    # 03 Solution insight
     s = prs.slides.add_slide(prs.slide_layouts[6])
     _add_bg(s)
     _bar(s)
-    _title(s, "The insight: runtime, not classification")
+    _title(s, "Proposed solution — runtime twin, not classification")
     _body(s, [
-        "Prompt injection is not a text-classification problem.",
-        "",
-        "It is a runtime security problem:",
+        "Prompt injection is a runtime security problem:",
         "    Does untrusted content change what tools the agent would call?",
         "",
         "Aegis Guard runs a behavioral twin:",
@@ -168,7 +169,7 @@ def build() -> Path:
     ], top=1.35, size=17)
     _footer(s, "03")
 
-    # 4 Solution
+    # 04 Control plane
     s = prs.slides.add_slide(prs.slide_layouts[6])
     _add_bg(s)
     _bar(s)
@@ -187,32 +188,50 @@ def build() -> Path:
         _card(s, 0.7 + col * 4.15, 1.35 + row * 2.35, 3.95, 2.15, t, b)
     _footer(s, "04")
 
-    # 5 Architecture
+    # 05 Architecture
     s = prs.slides.add_slide(prs.slide_layouts[6])
     _add_bg(s)
     _bar(s)
-    _title(s, "Architecture — evidence for claims")
+    _title(s, "Architecture")
     _body(s, [
         "Input → Ingest → Decode → Provenance → Static → Behavioral Twin → Risk → Gate",
         "                                                              ↓",
         "                                        Protected Agent (caps)  |  Analyst Quarantine",
         "",
-        "Supporting controls (enterprise-ready):",
+        "Supporting controls:",
         "  • Capability tokens fail-closed on secrets, shell, external email",
         "  • SQLite audit trail + incident JSON export",
         "  • Session risk memory for multi-step jailbreaks",
         "  • Optional OpenAI-compatible LLM planner enrichment (offline twin by default)",
         "",
-        "Stack: Python · FastAPI · Streamlit (local) · Vercel production UI",
         "Repo: github.com/krabhi75/aegis-prompt-injection-firewall",
     ], top=1.3, size=15)
     _footer(s, "05")
 
-    # 6 Demo proof
+    # 06 AI models & tech
     s = prs.slides.add_slide(prs.slide_layouts[6])
     _add_bg(s)
     _bar(s)
-    _title(s, "Demo proof")
+    _title(s, "AI models & technologies")
+    _card(s, 0.7, 1.35, 6.0, 4.8, "Agentic AI in the product",
+          "• Dual planner (trusted vs raw tool trajectories)\n"
+          "• Deterministic offline planner by default — reproducible demos\n"
+          "• Optional OpenAI-compatible / Ollama LLM planner enrichment\n"
+          "• Protected agent executes only on ALLOW with capability tokens\n"
+          "• Session memory for multi-step jailbreak escalation")
+    _card(s, 6.95, 1.35, 5.6, 4.8, "Engineering stack",
+          "• Python 3.11 · FastAPI · Pydantic v2\n"
+          "• Streamlit analyst console (local)\n"
+          "• Vercel Executive Console (production)\n"
+          "• pypdf · BeautifulSoup · Pillow (+ optional Tesseract OCR)\n"
+          "• SQLite audit · pytest · 55-sample corpus")
+    _footer(s, "06")
+
+    # 07 Demo proof
+    s = prs.slides.add_slide(prs.slide_layouts[6])
+    _add_bg(s)
+    _bar(s)
+    _title(s, "Product demo — proof points")
     rows = [
         ("Benign product PDF", "ALLOW", "Trusted summarize path"),
         ("Indirect injection in PDF", "BLOCK", "Twin drift: get_secret + send_email"),
@@ -234,51 +253,73 @@ def build() -> Path:
         det = s.shapes.add_textbox(Inches(8.8), Inches(y + 0.18), Inches(3.5), Inches(0.5))
         _set_run(det.text_frame.paragraphs[0].add_run(), detail, 12, False, MUTED)
         y += 0.95
-    _footer(s, "06")
-
-    # 7 F3/D2
-    s = prs.slides.add_slide(prs.slide_layouts[6])
-    _add_bg(s)
-    _bar(s)
-    _title(s, "9-blocker claim — F3 / D2")
-    _card(s, 0.7, 1.35, 6.0, 4.6, "F3 — Features (≥7 attack types)",
-          "All 9 official attack types implemented and covered in corpus:\n\n"
-          "1 Instruction Override\n2 Role Change\n3 Secret Extraction\n"
-          "4 Tool Abuse\n5 Credential Theft\n6 Context Poisoning\n"
-          "7 Multi-Step Jailbreak\n8 Encoded Instructions\n9 Indirect Prompt Injection\n\n"
-          "Live demo demonstrates ≥7 clearly.")
-    _card(s, 6.95, 1.35, 5.6, 4.6, "D2 — Depth (high reliability)",
-          "Mostly structured/textual multimodal inputs "
-          "(user, PDF text, HTML, email, API, OCR text) "
-          "with demonstrable reliability:\n\n"
-          "• Corpus n = 55\n"
-          "• Precision / Recall / F1 ≈ 1.0 on suite\n"
-          "• Pytest: 11/11 passed\n"
-          "• Command Center metrics in live UI\n\n"
-          "Not claiming D3: Word/image OCR not fully shown in production demo.")
     _footer(s, "07")
 
-    # 8 Business + closer
+    # 08 Business impact
     s = prs.slides.add_slide(prs.slide_layouts[6])
     _add_bg(s)
     _bar(s)
-    _title(s, "Business impact & ask")
-    _body(s, [
-        "Measurable outcomes for enterprises deploying agents:",
-        "  • Risk reduction — block secret theft and tool abuse before execution",
-        "  • Auditability — incident JSON + decision trail for security teams",
-        "  • Governance — OWASP LLM Top 10 & NIST AI RMF mapped controls",
-        "  • Human oversight — quarantine band keeps humans in the loop",
-        "",
-        "Live: https://aegis-prompt-injection-firewall.vercel.app",
-        "Code: https://github.com/krabhi75/aegis-prompt-injection-firewall",
-        "",
-        "Closer:",
-        "  Everyone else ships a classifier. We ship a twin.",
-        "  If the document tries to make your agent steal secrets,",
-        "  the plans diverge — and Aegis blocks before a single tool runs.",
-    ], top=1.3, size=15)
+    _title(s, "Business impact")
+    _card(s, 0.7, 1.35, 3.9, 4.6, "Risk reduction", "Block secret theft and tool abuse before execution — agents stay useful on benign documents.")
+    _card(s, 4.8, 1.35, 3.9, 4.6, "Audit & governance", "Incident JSON, decision trails, OWASP LLM Top 10 & NIST AI RMF mapped controls for security teams.")
+    _card(s, 8.9, 1.35, 3.7, 4.6, "Human oversight", "Quarantine band keeps analysts in the loop for ambiguous cases — fail-closed on high risk.")
     _footer(s, "08")
+
+    # 09 Scalability
+    s = prs.slides.add_slide(prs.slide_layouts[6])
+    _add_bg(s)
+    _bar(s)
+    _title(s, "Scalability")
+    _body(s, [
+        "Designed as a side-car control plane in front of any tool-using agent:",
+        "  • Stateless scan API — horizontal scale behind a load balancer",
+        "  • Offline twin by default — predictable latency without LLM round-trips",
+        "  • Optional LLM planner only where enrichment adds value",
+        "  • SQLite today → Postgres / object storage for multi-tenant audit at scale",
+        "  • Capability tokens enforce least privilege per tenant / agent role",
+        "  • Corpus + pytest gate regressions as detectors grow",
+        "",
+        "Same pattern works for email triage, ticket agents, and document copilots.",
+    ], top=1.3, size=16)
+    _footer(s, "09")
+
+    # 10 Roadmap
+    s = prs.slides.add_slide(prs.slide_layouts[6])
+    _add_bg(s)
+    _bar(s)
+    _title(s, "Future roadmap")
+    _card(s, 0.7, 1.35, 3.9, 4.6, "Near term", "Deeper OCR / Word paths · richer policy packs · SIEM / webhook exporters · stronger multi-tenant audit.")
+    _card(s, 4.8, 1.35, 3.9, 4.6, "Mid term", "Native SDK embeds · streaming scan for long docs · adaptive thresholds per agent role · red-team corpus growth.")
+    _card(s, 8.9, 1.35, 3.7, 4.6, "North star", "Default runtime firewall for enterprise agents — twin + provenance + caps as industry pattern.")
+    _footer(s, "10")
+
+    # 11 Closer
+    s = prs.slides.add_slide(prs.slide_layouts[6])
+    _add_bg(s, INK)
+    band = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, Inches(0.12), Inches(7.5))
+    band.fill.solid()
+    band.fill.fore_color.rgb = ACCENT
+    band.line.fill.background()
+    box = s.shapes.add_textbox(Inches(0.9), Inches(2.2), Inches(11.5), Inches(3.5))
+    tf = box.text_frame
+    tf.word_wrap = True
+    r = tf.paragraphs[0].add_run()
+    _set_run(r, "Everyone else ships a classifier.", 28, False, RGBColor(0xC5, 0xD2, 0xCC))
+    p = tf.add_paragraph()
+    r = p.add_run()
+    _set_run(r, "We ship a twin.", 40, True, WHITE)
+    p = tf.add_paragraph()
+    r = p.add_run()
+    _set_run(r, "", 14, False, WHITE)
+    p = tf.add_paragraph()
+    r = p.add_run()
+    _set_run(r, "If the document tries to make your agent steal secrets,", 18, False, RGBColor(0xE6, 0xF5, 0xF2))
+    p = tf.add_paragraph()
+    r = p.add_run()
+    _set_run(r, "the plans diverge — and Aegis blocks before a single tool runs.", 18, False, RGBColor(0xE6, 0xF5, 0xF2))
+    box2 = s.shapes.add_textbox(Inches(0.9), Inches(6.2), Inches(11.5), Inches(0.7))
+    r = box2.text_frame.paragraphs[0].add_run()
+    _set_run(r, "Live  ·  aegis-prompt-injection-firewall.vercel.app     ·     Thank you", 16, True, RGBColor(0x9A, 0xE6, 0xC5))
 
     prs.save(OUT)
     return OUT

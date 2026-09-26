@@ -33,7 +33,7 @@ def _footer(c: canvas.Canvas, page: str) -> None:
     c.line(0, H - 6, W, H - 6)
     c.setFillColor(MUTED)
     c.setFont("Helvetica", 9)
-    c.drawString(0.6 * inch, 0.35 * inch, f"Aegis Guard  ·  ET AI Hackathon Problem 2  ·  Claim F3 / D2  ·  {page}")
+    c.drawString(0.6 * inch, 0.35 * inch, f"Aegis Guard  ·  Prompt Injection Firewall  ·  {page}")
     c.drawRightString(W - 0.55 * inch, 0.35 * inch, page)
 
 
@@ -47,13 +47,7 @@ def _card(c: canvas.Canvas, x, y, w, h, title: str, body: str, accent=ACCENT) ->
     c.setFillColor(ACCENT2)
     c.setFont("Helvetica-Bold", 12)
     c.drawString(x + 16, y + h - 22, title)
-    style = ParagraphStyle(
-        "card",
-        fontName="Helvetica",
-        fontSize=10,
-        textColor=MUTED,
-        leading=14,
-    )
+    style = ParagraphStyle("card", fontName="Helvetica", fontSize=10, textColor=MUTED, leading=14)
     p = Paragraph(body.replace("\n", "<br/>"), style)
     pw, ph = p.wrap(w - 28, h - 40)
     p.drawOn(c, x + 16, y + h - 36 - ph)
@@ -70,18 +64,21 @@ def slide_title(c: canvas.Canvas) -> None:
     c.rect(0, 0, W, 1.45 * inch, fill=1, stroke=0)
     c.setFillColor(white)
     c.setFont("Helvetica-Bold", 42)
-    c.drawString(0.8 * inch, H - 2.4 * inch, "AEGIS GUARD")
+    c.drawString(0.8 * inch, H - 2.2 * inch, "AEGIS GUARD")
     c.setFillColor(MINT)
-    c.setFont("Helvetica", 20)
-    c.drawString(0.8 * inch, H - 3.15 * inch, "Behavioral Twin Prompt Injection Firewall")
+    c.setFont("Helvetica", 18)
+    c.drawString(0.8 * inch, H - 2.85 * inch, "Behavioral Twin Prompt Injection Firewall")
     c.setFillColor(SOFT)
-    c.setFont("Helvetica", 13)
-    c.drawString(0.8 * inch, H - 3.55 * inch, "ET AI Hackathon: Agentic Edition  ·  Problem 2  ·  Solo")
+    c.setFont("Helvetica", 12)
+    c.drawString(0.8 * inch, H - 3.25 * inch, "Agentic Cybersecurity  ·  Solo build  ·  Python")
+    c.setFillColor(HexColor("#E6F5F2"))
+    c.setFont("Helvetica", 12)
+    c.drawString(0.8 * inch, H - 3.7 * inch, "Team: Abhishek — Product · Architecture · Full-stack implementation")
     c.setFillColor(white)
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(0.8 * inch, 0.85 * inch, "Self-estimated 9-blocker:  F3  /  D2")
+    c.setFont("Helvetica-Bold", 13)
+    c.drawString(0.8 * inch, 0.85 * inch, "Live  ·  aegis-prompt-injection-firewall.vercel.app")
     c.setFont("Helvetica", 11)
-    c.drawString(0.8 * inch, 0.5 * inch, "Live  ·  aegis-prompt-injection-firewall.vercel.app")
+    c.drawString(0.8 * inch, 0.5 * inch, "GitHub  ·  github.com/krabhi75/aegis-prompt-injection-firewall")
     c.showPage()
 
 
@@ -90,7 +87,7 @@ def slide_problem(c: canvas.Canvas) -> None:
     _footer(c, "02")
     c.setFillColor(INK)
     c.setFont("Helvetica-Bold", 26)
-    c.drawString(0.7 * inch, H - 0.95 * inch, "The enterprise risk")
+    c.drawString(0.7 * inch, H - 0.95 * inch, "Problem statement")
     cards = [
         (0.7, "Agents touch untrusted content", "PDF, email, HTML, OCR, and APIs now feed tool-using agents. Attackers hide instructions inside those documents."),
         (4.0, "Indirect prompt injection", "A single poisoned attachment can trigger get_secret, send_email, or shell tools — without the user noticing."),
@@ -101,20 +98,19 @@ def slide_problem(c: canvas.Canvas) -> None:
         _card(c, x * inch, H - 4.2 * inch, 3.1 * inch, 2.5 * inch, t, b, a)
     c.setFillColor(INK)
     c.setFont("Helvetica", 12)
-    c.drawString(0.7 * inch, 1.6 * inch, "Accenture clients are shipping copilots and agents into production workflows.")
+    c.drawString(0.7 * inch, 1.6 * inch, "Enterprises are shipping copilots and agents into production workflows.")
     c.drawString(0.7 * inch, 1.25 * inch, "Without a runtime control plane, every document becomes an attack surface.")
     c.showPage()
 
 
-def slide_insight(c: canvas.Canvas) -> None:
+def slide_solution(c: canvas.Canvas) -> None:
     _bg(c)
     _footer(c, "03")
     c.setFillColor(INK)
-    c.setFont("Helvetica-Bold", 26)
-    c.drawString(0.7 * inch, H - 0.95 * inch, "The insight: runtime, not classification")
+    c.setFont("Helvetica-Bold", 24)
+    c.drawString(0.7 * inch, H - 0.95 * inch, "Proposed solution — runtime twin, not classification")
     lines = [
-        "Prompt injection is not a text-classification problem.",
-        "It is a runtime security problem:",
+        "Prompt injection is a runtime security problem:",
         "    Does untrusted content change what tools the agent would call?",
         "",
         "Aegis Guard runs a behavioral twin:",
@@ -161,7 +157,7 @@ def slide_architecture(c: canvas.Canvas) -> None:
     _footer(c, "05")
     c.setFillColor(INK)
     c.setFont("Helvetica-Bold", 26)
-    c.drawString(0.7 * inch, H - 0.95 * inch, "Architecture — evidence for claims")
+    c.drawString(0.7 * inch, H - 0.95 * inch, "Architecture")
     c.setFillColor(white)
     c.setStrokeColor(LINE)
     c.roundRect(0.7 * inch, H - 2.5 * inch, W - 1.4 * inch, 1.15 * inch, 8, fill=1, stroke=1)
@@ -176,7 +172,6 @@ def slide_architecture(c: canvas.Canvas) -> None:
         "SQLite audit trail + incident JSON export",
         "Session risk memory for multi-step jailbreaks",
         "Optional OpenAI-compatible LLM planner (offline twin by default)",
-        "Stack: Python · FastAPI · Streamlit (local) · Vercel production UI",
         "Repo: github.com/krabhi75/aegis-prompt-injection-firewall",
     ]
     y = H - 3.1 * inch
@@ -188,12 +183,37 @@ def slide_architecture(c: canvas.Canvas) -> None:
     c.showPage()
 
 
-def slide_demo(c: canvas.Canvas) -> None:
+def slide_tech(c: canvas.Canvas) -> None:
     _bg(c)
     _footer(c, "06")
     c.setFillColor(INK)
     c.setFont("Helvetica-Bold", 26)
-    c.drawString(0.7 * inch, H - 0.95 * inch, "Demo proof")
+    c.drawString(0.7 * inch, H - 0.95 * inch, "AI models & technologies")
+    _card(
+        c, 0.7 * inch, 0.9 * inch, 5.5 * inch, 5.0 * inch, "Agentic AI in the product",
+        "• Dual planner (trusted vs raw tool trajectories)<br/>"
+        "• Deterministic offline planner by default<br/>"
+        "• Optional OpenAI-compatible / Ollama enrichment<br/>"
+        "• Protected agent executes only on ALLOW<br/>"
+        "• Session memory for multi-step jailbreaks",
+    )
+    _card(
+        c, 6.5 * inch, 0.9 * inch, 5.3 * inch, 5.0 * inch, "Engineering stack",
+        "• Python 3.11 · FastAPI · Pydantic v2<br/>"
+        "• Streamlit analyst console (local)<br/>"
+        "• Vercel Executive Console (production)<br/>"
+        "• pypdf · BeautifulSoup · Pillow (+ OCR)<br/>"
+        "• SQLite audit · pytest · 55-sample corpus",
+    )
+    c.showPage()
+
+
+def slide_demo(c: canvas.Canvas) -> None:
+    _bg(c)
+    _footer(c, "07")
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 26)
+    c.drawString(0.7 * inch, H - 0.95 * inch, "Product demo — proof points")
     rows = [
         ("Benign product PDF", "ALLOW", "Trusted summarize path", ALLOW),
         ("Indirect injection in PDF", "BLOCK", "Twin drift: get_secret + send_email", BLOCK),
@@ -219,76 +239,97 @@ def slide_demo(c: canvas.Canvas) -> None:
     c.showPage()
 
 
-def slide_claim(c: canvas.Canvas) -> None:
-    _bg(c)
-    _footer(c, "07")
-    c.setFillColor(INK)
-    c.setFont("Helvetica-Bold", 26)
-    c.drawString(0.7 * inch, H - 0.95 * inch, "9-blocker claim — F3 / D2")
-    f3 = (
-        "All 9 official attack types implemented and covered in corpus:<br/><br/>"
-        "1 Instruction Override<br/>2 Role Change<br/>3 Secret Extraction<br/>"
-        "4 Tool Abuse<br/>5 Credential Theft<br/>6 Context Poisoning<br/>"
-        "7 Multi-Step Jailbreak<br/>8 Encoded Instructions<br/>9 Indirect Prompt Injection<br/><br/>"
-        "Live demo demonstrates ≥7 clearly."
-    )
-    d2 = (
-        "Mostly structured/textual multimodal inputs "
-        "(user, PDF text, HTML, email, API, OCR text) "
-        "with demonstrable reliability:<br/><br/>"
-        "• Corpus n = 55<br/>"
-        "• Precision / Recall / F1 ≈ 1.0 on suite<br/>"
-        "• Pytest: 11/11 passed<br/>"
-        "• Command Center metrics in live UI<br/><br/>"
-        "Not claiming D3: Word/image OCR not fully shown in production demo."
-    )
-    _card(c, 0.7 * inch, 0.9 * inch, 5.5 * inch, 5.0 * inch, "F3 — Features (≥7 attack types)", f3)
-    _card(c, 6.5 * inch, 0.9 * inch, 5.3 * inch, 5.0 * inch, "D2 — Depth (high reliability)", d2)
-    c.showPage()
-
-
-def slide_close(c: canvas.Canvas) -> None:
+def slide_business(c: canvas.Canvas) -> None:
     _bg(c)
     _footer(c, "08")
     c.setFillColor(INK)
     c.setFont("Helvetica-Bold", 26)
-    c.drawString(0.7 * inch, H - 0.95 * inch, "Business impact & ask")
+    c.drawString(0.7 * inch, H - 0.95 * inch, "Business impact")
+    _card(c, 0.7 * inch, 1.0 * inch, 3.3 * inch, 4.6 * inch, "Risk reduction",
+          "Block secret theft and tool abuse before execution — agents stay useful on benign documents.")
+    _card(c, 4.2 * inch, 1.0 * inch, 3.3 * inch, 4.6 * inch, "Audit & governance",
+          "Incident JSON, decision trails, OWASP LLM Top 10 & NIST AI RMF mapped controls.")
+    _card(c, 7.7 * inch, 1.0 * inch, 3.3 * inch, 4.6 * inch, "Human oversight",
+          "Quarantine band keeps analysts in the loop — fail-closed on high risk.")
+    c.showPage()
+
+
+def slide_scale(c: canvas.Canvas) -> None:
+    _bg(c)
+    _footer(c, "09")
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 26)
+    c.drawString(0.7 * inch, H - 0.95 * inch, "Scalability")
     lines = [
-        "Measurable outcomes for enterprises deploying agents:",
-        "  • Risk reduction — block secret theft and tool abuse before execution",
-        "  • Auditability — incident JSON + decision trail for security teams",
-        "  • Governance — OWASP LLM Top 10 & NIST AI RMF mapped controls",
-        "  • Human oversight — quarantine band keeps humans in the loop",
+        "Designed as a side-car control plane in front of any tool-using agent:",
+        "  • Stateless scan API — horizontal scale behind a load balancer",
+        "  • Offline twin by default — predictable latency without LLM round-trips",
+        "  • Optional LLM planner only where enrichment adds value",
+        "  • SQLite today → Postgres / object storage for multi-tenant audit",
+        "  • Capability tokens enforce least privilege per tenant / agent role",
+        "  • Corpus + pytest gate regressions as detectors grow",
         "",
-        "Live: https://aegis-prompt-injection-firewall.vercel.app",
-        "Code: https://github.com/krabhi75/aegis-prompt-injection-firewall",
-        "",
-        "Closer: Everyone else ships a classifier. We ship a twin.",
-        "If the document tries to make your agent steal secrets,",
-        "the plans diverge — and Aegis blocks before a single tool runs.",
+        "Same pattern works for email triage, ticket agents, and document copilots.",
     ]
     y = H - 1.55 * inch
     for line in lines:
-        bold = line.startswith("Closer") or line.startswith("Live") or line.startswith("Code")
-        c.setFont("Helvetica-Bold" if bold else "Helvetica", 12)
+        c.setFont("Helvetica", 13)
         c.setFillColor(INK if not line.startswith("  ") else MUTED)
         c.drawString(0.7 * inch, y, line)
-        y -= 0.38 * inch
+        y -= 0.4 * inch
+    c.showPage()
+
+
+def slide_roadmap(c: canvas.Canvas) -> None:
+    _bg(c)
+    _footer(c, "10")
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 26)
+    c.drawString(0.7 * inch, H - 0.95 * inch, "Future roadmap")
+    _card(c, 0.7 * inch, 1.0 * inch, 3.3 * inch, 4.6 * inch, "Near term",
+          "Deeper OCR / Word paths · richer policy packs · SIEM / webhook exporters · stronger multi-tenant audit.")
+    _card(c, 4.2 * inch, 1.0 * inch, 3.3 * inch, 4.6 * inch, "Mid term",
+          "Native SDK embeds · streaming scan for long docs · adaptive thresholds per agent role · red-team corpus growth.")
+    _card(c, 7.7 * inch, 1.0 * inch, 3.3 * inch, 4.6 * inch, "North star",
+          "Default runtime firewall for enterprise agents — twin + provenance + caps as industry pattern.")
+    c.showPage()
+
+
+def slide_close(c: canvas.Canvas) -> None:
+    _bg(c, INK)
+    c.setFillColor(ACCENT)
+    c.rect(0, 0, 10, H, fill=1, stroke=0)
+    c.setFillColor(SOFT)
+    c.setFont("Helvetica", 22)
+    c.drawString(0.9 * inch, H - 2.6 * inch, "Everyone else ships a classifier.")
+    c.setFillColor(white)
+    c.setFont("Helvetica-Bold", 34)
+    c.drawString(0.9 * inch, H - 3.3 * inch, "We ship a twin.")
+    c.setFillColor(HexColor("#E6F5F2"))
+    c.setFont("Helvetica", 14)
+    c.drawString(0.9 * inch, H - 4.1 * inch, "If the document tries to make your agent steal secrets,")
+    c.drawString(0.9 * inch, H - 4.45 * inch, "the plans diverge — and Aegis blocks before a single tool runs.")
+    c.setFillColor(MINT)
+    c.setFont("Helvetica-Bold", 13)
+    c.drawString(0.9 * inch, 1.0 * inch, "Live  ·  aegis-prompt-injection-firewall.vercel.app     ·     Thank you")
     c.showPage()
 
 
 def build() -> Path:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     c = canvas.Canvas(str(OUT), pagesize=PAGE)
-    c.setTitle("Aegis Guard — ET AI Hackathon Problem 2")
+    c.setTitle("Aegis Guard — Pitch Deck")
     c.setAuthor("Aegis Guard")
     slide_title(c)
     slide_problem(c)
-    slide_insight(c)
+    slide_solution(c)
     slide_control(c)
     slide_architecture(c)
+    slide_tech(c)
     slide_demo(c)
-    slide_claim(c)
+    slide_business(c)
+    slide_scale(c)
+    slide_roadmap(c)
     slide_close(c)
     c.save()
     return OUT
