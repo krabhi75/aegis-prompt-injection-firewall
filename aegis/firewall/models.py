@@ -90,6 +90,9 @@ class FirewallVerdict(BaseModel):
     session_id: str = ""
     sanitized_text: str = ""
     raw_text: str = ""
+    event_id: Optional[int] = None
+    pipeline_trace: list[dict[str, Any]] = Field(default_factory=list)
+    comparison: dict[str, Any] = Field(default_factory=dict)
 
 
 class ScanRequest(BaseModel):
@@ -103,9 +106,19 @@ class ScanResponse(BaseModel):
     verdict: FirewallVerdict
     agent_reply: Optional[str] = None
     tool_results: list[dict[str, Any]] = Field(default_factory=list)
+    incident_report: dict[str, Any] = Field(default_factory=dict)
 
 
 class QuarantineAction(BaseModel):
     event_id: int
     action: str  # approve | deny
     analyst_note: str = ""
+
+
+class PolicyUpdate(BaseModel):
+    allowed_tools: Optional[list[str]] = None
+    allow_secrets: Optional[bool] = None
+    allow_external_email: Optional[bool] = None
+    allow_network: Optional[bool] = None
+    max_tool_calls: Optional[int] = None
+    notes: Optional[str] = None

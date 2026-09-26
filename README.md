@@ -416,15 +416,27 @@ make ui         # http://localhost:8501
 
 **Live:** https://aegis-prompt-injection-firewall.vercel.app  
 
-- Demo UI: `/`  
-- API docs: `/docs`  
-- Health: `/health`  
+- Demo UI: `/` — **Executive Console** (Console · Command Center · Policy · Frameworks · Playbooks · Quarantine)
+- API docs: `/docs`
+- Health: `/health`
+- Telemetry: `/telemetry`
+- Frameworks: `/frameworks`
+- Policy: `/policy`
 
-Streamlit is local-only; Vercel serves FastAPI + the web demo (`main.py` + `public/index.html`).
+New presentation features:
 
-```bash
-npx vercel --prod
-```
+| Feature | Why leaders care |
+|---------|------------------|
+| Classifier vs Aegis comparison | Proves twin advantage vs keyword firewalls |
+| Pipeline explainability trace | Answers “why did you block?” |
+| Command Center metrics | D2 precision/recall + live attack histogram |
+| Capability policy console | Least-privilege control plane |
+| OWASP / NIST mapping | Governance language for CISOs |
+| Attack playbooks (9) | Structured threat narrative |
+| Incident JSON export | Audit-ready artifact |
+| Quarantine HITL | Humans in the loop |
+
+Streamlit remains available locally (`make ui`) for the original analyst console.
 
 Open **http://localhost:8501** → tab **Demo Scenarios**.
 
