@@ -5,10 +5,16 @@ __pycache__/
 .venv/
 venv/
 .env
+.env*
 aegis/data/aegis.db
 .pytest_cache/
 .streamlit/
 .DS_Store
 *.log
 .vercel
-.env*
+aegis/submission/video_assets/frames/
+aegis/submission/video_assets/concat.txt
+aegis/submission/video_assets/frames.txt
+aegis/submission/video_assets/slideshow.mp4
+aegis/submission/video_assets/n0*.mp3
+aegis/submission/video_assets/narration_part*.mp3

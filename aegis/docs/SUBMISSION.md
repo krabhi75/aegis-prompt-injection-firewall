@@ -1,24 +1,26 @@
-# Submission checklist — Aegis (Problem 2)
+# Submission checklist — Aegis Guard (Problem 2)
 
-## Required Unstop artifacts
+## Unstop Phase 2 artifacts
 
-- [x] Working prototype (this repo)
-- [ ] Pitch deck PDF/PPT — build from [`docs/PITCH_OUTLINE.md`](../docs/PITCH_OUTLINE.md)
-- [ ] 2-minute demo video — follow [`demos/SCRIPT.md`](../demos/SCRIPT.md)
-- [x] Architecture write-up — [`docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md)
+- [x] Working prototype — https://github.com/krabhi75/aegis-prompt-injection-firewall
+- [x] Live demo — https://aegis-prompt-injection-firewall.vercel.app
+- [x] Pitch deck PPTX — `aegis/submission/Aegis_Guard_ET_AI_Hackathon_Problem2.pptx`
+- [x] Pitch deck PDF — `aegis/submission/Aegis_Guard_ET_AI_Hackathon_Problem2.pdf`
+- [x] Demo video (~4:30) — `aegis/submission/Aegis_Guard_Demo_4min.mp4`
+- [x] Architecture + F3/D2 justification — `docs/ARCHITECTURE.md` + deck slide 07
 
-## Declared 9-blocker position
+## Declared 9-blocker
 
-**F3 / D2** (do not claim D3 unless OCR+tesseract is in the recorded video)
+**F3 / D2** (do not claim D3)
 
-Justification:
-- F3: 9 attack types in static/twin/decode; live demo shows ≥7
-- D2: corpus n=55, precision/recall/f1 = 1.0 on current suite; pytest green
+## Upload to Unstop
 
-## Run before recording
+1. Problem 2 selected
+2. GitHub URL
+3. Upload PPTX or PDF
+4. Upload MP4 (or Drive/YouTube unlisted link if file size blocked)
+5. Optional: live demo URL
 
-```bash
-make install && make test && make corpus
-make api   # term 1
-make ui    # term 2
-```
+## Security note
+
+Rotate Deepgram API key after submission — never commit `.env`.
