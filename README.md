@@ -400,8 +400,8 @@ ET-Hackethon/   (or your clone root)
 ### Install & run
 
 ```bash
-git clone https://github.com/<your-user>/<your-repo>.git
-cd <your-repo>
+git clone https://github.com/krabhi75/aegis-prompt-injection-firewall.git
+cd aegis-prompt-injection-firewall
 
 make install    # creates .venv, installs deps, generates demo PDFs/HTML
 
