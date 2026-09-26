@@ -414,13 +414,17 @@ make ui         # http://localhost:8501
 
 ### Deployed demo (Vercel)
 
-Live UI + API from root `main.py` + `public/index.html` (Streamlit is local-only; Vercel serves the FastAPI web demo).
+**Live:** https://aegis-prompt-injection-firewall.vercel.app  
+
+- Demo UI: `/`  
+- API docs: `/docs`  
+- Health: `/health`  
+
+Streamlit is local-only; Vercel serves FastAPI + the web demo (`main.py` + `public/index.html`).
 
 ```bash
 npx vercel --prod
 ```
-
-Production URL is printed by the CLI after deploy.
 
 Open **http://localhost:8501** → tab **Demo Scenarios**.
 

@@ -10,3 +10,5 @@ aegis/data/aegis.db
 .streamlit/
 .DS_Store
 *.log
+.vercel
+.env*
