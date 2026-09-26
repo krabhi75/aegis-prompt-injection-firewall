@@ -1,43 +1,40 @@
-# AEGIS
+# Aegis Guard
 
 ### Behavioral Twin Prompt Injection Firewall
 
-**ET AI Hackathon: Agentic Edition · Presented by Accenture**  
-**Problem 2 — Agentic Cybersecurity: Prompt Injection Firewall**  
-**Claimed evaluation grid: F3 / D2** · Solo build · Python
-
 > Enterprises cannot safely deploy tool-using AI agents on email, PDFs, HTML, or OCR without a **runtime** that blocks prompt injection by **behavior**, not keywords.
+
+**Live demo:** https://aegis-prompt-injection-firewall.vercel.app  
+**Stack:** Python · FastAPI · Streamlit (local) · Vercel
 
 ---
 
 ## Table of contents
 
 1. [What is Aegis?](#1-what-is-aegis)
-2. [Why this wins (vs typical hackathon submissions)](#2-why-this-wins-vs-typical-hackathon-submissions)
-3. [Problem statement mapping](#3-problem-statement-mapping)
+2. [Why a behavioral twin?](#2-why-a-behavioral-twin)
+3. [What it protects against](#3-what-it-protects-against)
 4. [Architecture overview](#4-architecture-overview)
 5. [End-to-end flowcharts](#5-end-to-end-flowcharts)
-6. [Pipeline stages (minute detail)](#6-pipeline-stages-minute-detail)
-7. [Attack coverage (all 9 types)](#7-attack-coverage-all-9-types)
-8. [9-blocker claim (F3 / D2)](#8-9-blocker-claim-f3--d2)
-9. [Repository layout](#9-repository-layout)
-10. [Tech stack](#10-tech-stack)
-11. [Quick start](#11-quick-start)
-12. [API reference](#12-api-reference)
-13. [Analyst console (UI)](#13-analyst-console-ui)
-14. [2-minute demo script](#14-2-minute-demo-script)
-15. [Tests & corpus metrics](#15-tests--corpus-metrics)
-16. [Configuration & environment](#16-configuration--environment)
-17. [Responsible AI & human-in-the-loop](#17-responsible-ai--human-in-the-loop)
-18. [Business impact](#18-business-impact)
-19. [Submission checklist](#19-submission-checklist)
-20. [License](#20-license)
+6. [Pipeline stages](#6-pipeline-stages)
+7. [Attack coverage](#7-attack-coverage)
+8. [Repository layout](#8-repository-layout)
+9. [Tech stack](#9-tech-stack)
+10. [Quick start](#10-quick-start)
+11. [API reference](#11-api-reference)
+12. [Analyst console (UI)](#12-analyst-console-ui)
+13. [Demo walkthrough](#13-demo-walkthrough)
+14. [Tests & corpus metrics](#14-tests--corpus-metrics)
+15. [Configuration & environment](#15-configuration--environment)
+16. [Responsible AI & human-in-the-loop](#16-responsible-ai--human-in-the-loop)
+17. [Business impact](#17-business-impact)
+18. [License](#18-license)
 
 ---
 
 ## 1. What is Aegis?
 
-**Aegis** is a Prompt Injection Firewall that sits in front of a tool-using AI agent.
+**Aegis** is a prompt injection firewall that sits in front of a tool-using AI agent.
 
 It does **not** ask an LLM “is this text a jailbreak?”
 
@@ -57,49 +54,36 @@ If untrusted content tries to make the agent steal secrets or email attackers, t
 
 ---
 
-## 2. Why this wins (vs typical hackathon submissions)
+## 2. Why a behavioral twin?
 
-| Typical submission | Aegis |
-|--------------------|-------|
+| Typical approach | Aegis |
+|------------------|-------|
 | LLM classifier: “jailbreak / not jailbreak” | Runtime security control plane |
 | Keyword / regex only | Decode + static + **behavioral twin** |
 | Chatbot “firewall” | Tool-trajectory comparison |
 | No human loop | Analyst quarantine console |
-| Hard to prove reliability | 55-sample corpus + pytest (D2 evidence) |
-| Bolted-on GenAI | Agentic by design (shadow planner + protected agent) |
+| Hard to measure reliability | 55-sample corpus + pytest |
+| Bolted-on GenAI | Dual planner + protected agent by design |
 
-**Judging alignment (Accenture / ET brief):**
-
-| Criterion | How Aegis addresses it |
-|-----------|------------------------|
-| Significance & relevance | Real enterprise agent risk today |
-| Innovation & originality | Behavioral twin, not another classifier |
-| Effective use of AI | Planner agents + optional LLM enrichment |
-| Technical complexity | Full pipeline, multimodal, audit, caps |
-| Agentic / autonomous | Dual planning, tool runtime, session memory |
-| Business impact | Enables safe agent deployment on untrusted docs |
-| Prototype quality | Streamlit demo + FastAPI + one-click scenarios |
-| Responsible AI | Fail-closed caps, quarantine, audit trail |
+Prompt injection is a **runtime** problem: would untrusted content change what tools the agent would call? Aegis compares a trusted plan against a raw plan and gates on high-risk drift.
 
 ---
 
-## 3. Problem statement mapping
+## 3. What it protects against
 
-Official Problem 2 asks for a firewall that:
+Aegis intercepts incoming content **before** it can influence agent behavior. It supports common enterprise sources and attack patterns:
 
-- Intercepts incoming content **before** it influences AI behavior
-- Detects / neutralizes prompt injections
-- Allows legitimate content with minimal disruption
-- Handles sources: user messages, web pages, PDFs, emails, markdown, HTML, Word, API responses, OCR, source code, images
-- Detects attack types including: Instruction Override, Role Change, Secret Extraction, Tool Abuse, Credential Theft, Context Poisoning, Multi-Step Jailbreaks, Encoded Instructions, Indirect Prompt Injection
+**Sources:** user messages, web pages, PDFs, emails, markdown, HTML, Word text, API responses, OCR, source code, images  
 
-| Requirement | Aegis module |
-|-------------|--------------|
-| Intercept before influence | `firewall/engine.py` gate before `agent/protected.py` |
+**Attack families:** Instruction Override · Role Change · Secret Extraction · Tool Abuse · Credential Theft · Context Poisoning · Multi-Step Jailbreaks · Encoded Instructions · Indirect Prompt Injection
+
+| Goal | How Aegis does it |
+|------|-------------------|
+| Intercept before influence | Gate in `firewall/engine.py` before `agent/protected.py` |
 | Multimodal sources | `firewall/ingest.py` |
-| Detect ≥7 types (F3) | All **9** implemented |
-| Minimal disruption | Benign demos → `ALLOW` + summarize |
-| Neutralize | Block / quarantine; untrusted spans stripped from instruction channel |
+| Nine attack families | Static detectors + twin + session risk |
+| Minimal disruption | Benign docs → `ALLOW` + summarize |
+| Neutralize | Block / quarantine; untrusted spans stripped from the instruction channel |
 
 ---
 
@@ -208,7 +192,7 @@ flowchart TD
 
 ---
 
-## 6. Pipeline stages (minute detail)
+## 6. Pipeline stages
 
 ### Stage A — Ingest & normalize (`firewall/ingest.py`)
 
@@ -290,7 +274,7 @@ SQLite DB at `aegis/data/aegis.db`:
 
 ---
 
-## 7. Attack coverage (all 9 types)
+## 7. Attack coverage
 
 | # | Attack type | How Aegis catches it | Demo / corpus |
 |---|-------------|----------------------|---------------|
@@ -304,92 +288,69 @@ SQLite DB at `aegis/data/aegis.db`:
 | 8 | Encoded Instructions | Decode layer before analysis | Scenario 3 |
 | 9 | Indirect Prompt Injection | Untrusted PDF/HTML/email/OCR via twin | Scenario 2 |
 
-**F3 requires ≥7. Aegis implements 9.**
+All nine families are implemented and covered in the evaluation corpus.
 
 ---
 
-## 8. 9-blocker claim (F3 / D2)
-
-From the official brief: teams must **declare** position; over/under-estimation is penalized.
-
-| Axis | Level | Meaning | Our evidence |
-|------|-------|---------|--------------|
-| **Features** | **F3** | Detect ≥7 attack types | 9 types + live demo ≥7 |
-| **Depth** | **D2** | Structured/textual input + high demonstrable reliability | Corpus n=55, P/R/F1 ≈ 1.0; pytest |
-
-**D3 stretch:** OCR path exists (`ingest_ocr_image`). Claim D3 **only** if tesseract OCR is shown in the recorded demo.
-
----
-
-## 9. Repository layout
+## 8. Repository layout
 
 ```
-ET-Hackethon/   (or your clone root)
-├── README.md                 ← you are here
-├── Makefile                  ← install / api / ui / test / corpus
+aegis-prompt-injection-firewall/
+├── README.md
+├── Makefile
 ├── requirements.txt
-├── .gitignore
+├── main.py                   ← Vercel / ASGI entry
+├── public/                   ← production Executive Console
 └── aegis/
     ├── app/
     │   └── main.py           ← FastAPI (scan, audit, quarantine, metrics)
     ├── firewall/
-    │   ├── models.py         ← shared enums & pydantic models
-    │   ├── ingest.py         ← multimodal normalization
-    │   ├── decode.py         ← de-obfuscation
-    │   ├── provenance.py     ← trusted vs untrusted views
-    │   ├── static.py         ← attack pattern detectors
-    │   ├── twin.py           ← behavioral twin / drift
-    │   ├── risk.py           ← scoring + gate thresholds
-    │   ├── engine.py         ← orchestration
-    │   └── audit.py          ← SQLite audit + session risk
+    │   ├── models.py
+    │   ├── ingest.py
+    │   ├── decode.py
+    │   ├── provenance.py
+    │   ├── static.py
+    │   ├── twin.py
+    │   ├── risk.py
+    │   ├── engine.py
+    │   └── audit.py
     ├── agent/
-    │   ├── planner.py        ← dual planner (offline + optional LLM)
-    │   ├── capabilities.py   ← capability tokens
-    │   ├── tools.py          ← sandboxed tools + sinks
-    │   └── protected.py      ← agent that only runs on ALLOW
+    │   ├── planner.py
+    │   ├── capabilities.py
+    │   ├── tools.py
+    │   └── protected.py
     ├── ui/
     │   └── console.py        ← Streamlit analyst console
     ├── corpus/
-    │   ├── benign/           ← 25 benign JSON cases
-    │   ├── malicious/        ← 30 malicious JSON cases
-    │   └── evaluate.py       ← precision / recall / F1
+    │   ├── benign/
+    │   ├── malicious/
+    │   └── evaluate.py
     ├── demos/
-    │   ├── SCRIPT.md         ← 2-minute shot list
-    │   ├── generate_fixtures.py
-    │   ├── benign_product.pdf
-    │   ├── injected_product.pdf
-    │   ├── encoded_jailbreak.html
-    │   └── vendor_inject.eml
     ├── docs/
-    │   ├── ARCHITECTURE.md
-    │   ├── PITCH_OUTLINE.md
-    │   └── SUBMISSION.md
     ├── tests/
-    │   └── test_firewall.py
     └── data/
-        └── docs/product_brief.txt
 ```
 
 ---
 
-## 10. Tech stack
+## 9. Tech stack
 
 | Layer | Choice | Why |
 |-------|--------|-----|
-| Language | Python 3.11+ | Solo speed, Accenture-friendly |
+| Language | Python 3.11+ | Fast iteration, clear types |
 | API | FastAPI + Uvicorn | Clean REST for scan/audit |
-| UI | Streamlit | Fastest path to a juror-ready demo |
+| UI | Streamlit + static Executive Console | Local analyst tools + production demo |
 | Models | Pydantic v2 | Typed verdicts |
 | PDF | pypdf | Extract + demo fixtures |
 | HTML | BeautifulSoup4 | Comments / hidden channels |
 | Images | Pillow (+ optional tesseract) | OCR path |
 | Storage | SQLite | Zero-ops audit log |
-| Tests | pytest | D2 reliability proof |
+| Tests | pytest | Regression + corpus checks |
 | LLM (optional) | OpenAI-compatible / Ollama | Enrich planner; not required |
 
 ---
 
-## 11. Quick start
+## 10. Quick start
 
 ### Prerequisites
 
@@ -403,9 +364,9 @@ ET-Hackethon/   (or your clone root)
 git clone https://github.com/krabhi75/aegis-prompt-injection-firewall.git
 cd aegis-prompt-injection-firewall
 
-make install    # creates .venv, installs local deps (incl. Streamlit), demo fixtures
+make install    # creates .venv, installs deps, demo fixtures
 
-# Terminal 1 — API (also used by Vercel entrypoint main.py)
+# Terminal 1 — API
 make api        # http://0.0.0.0:8000  (health: /health)
 
 # Terminal 2 — local Streamlit analyst console
@@ -416,29 +377,29 @@ make ui         # http://localhost:8501
 
 **Live:** https://aegis-prompt-injection-firewall.vercel.app  
 
-- Demo UI: `/` — **Executive Console** (Console · Command Center · Policy · Frameworks · Playbooks · Quarantine)
-- API docs: `/docs`
-- Health: `/health`
-- Telemetry: `/telemetry`
-- Frameworks: `/frameworks`
-- Policy: `/policy`
+| Path | What you get |
+|------|----------------|
+| `/` | Executive Console (Console · Command Center · Policy · Frameworks · Playbooks · Quarantine) |
+| `/docs` | OpenAPI |
+| `/health` | Health check |
+| `/telemetry` | Live telemetry |
+| `/frameworks` | OWASP / NIST mapping |
+| `/policy` | Capability policy |
 
-New presentation features:
+Notable console features:
 
-| Feature | Why leaders care |
-|---------|------------------|
-| Classifier vs Aegis comparison | Proves twin advantage vs keyword firewalls |
+| Feature | Purpose |
+|---------|---------|
+| Classifier vs Aegis comparison | Shows twin advantage vs keyword-only filters |
 | Pipeline explainability trace | Answers “why did you block?” |
-| Command Center metrics | D2 precision/recall + live attack histogram |
+| Command Center metrics | Precision/recall + attack histogram |
 | Capability policy console | Least-privilege control plane |
-| OWASP / NIST mapping | Governance language for CISOs |
-| Attack playbooks (9) | Structured threat narrative |
+| OWASP / NIST mapping | Governance language for security teams |
+| Attack playbooks (9) | Structured threat walkthroughs |
 | Incident JSON export | Audit-ready artifact |
-| Quarantine HITL | Humans in the loop |
+| Quarantine HITL | Human review for ambiguous cases |
 
 Streamlit remains available locally (`make ui`) for the original analyst console.
-
-Open **http://localhost:8501** → tab **Demo Scenarios**.
 
 ### Useful Make targets
 
@@ -454,13 +415,13 @@ Open **http://localhost:8501** → tab **Demo Scenarios**.
 
 ---
 
-## 12. API reference
+## 11. API reference
 
 Base URL: `http://localhost:8000`
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `GET` | `/health` | Liveness + claim string |
+| `GET` | `/health` | Liveness |
 | `POST` | `/scan` | JSON scan (`session_id`, `user_message`, `attachments[]`) |
 | `POST` | `/scan/upload` | Multipart file upload scan |
 | `GET` | `/audit?limit=50` | Recent audit events |
@@ -486,14 +447,14 @@ Expected: `verdict.decision = "block"` (or quarantine), twin drift showing `get_
 
 ---
 
-## 13. Analyst console (UI)
+## 12. Analyst console (UI)
 
 Streamlit tabs:
 
 | Tab | Purpose |
 |-----|---------|
-| **Live Scan** | Paste message + upload/paste attachment; see twin plans side-by-side |
-| **Demo Scenarios** | One-click hackathon path (benign → inject → encoded → multi-step) |
+| **Live Scan** | Paste message + attachment; see twin plans side-by-side |
+| **Demo Scenarios** | One-click path (benign → inject → encoded → multi-step) |
 | **Quarantine** | Human approve / deny with notes |
 | **Audit Log** | Chronological decisions |
 | **Corpus Metrics** | Precision, recall, F1, per-attack hits |
@@ -507,25 +468,27 @@ UI highlights:
 
 ---
 
-## 14. 2-minute demo script
+## 13. Demo walkthrough
 
 Full shot list: [`aegis/demos/SCRIPT.md`](aegis/demos/SCRIPT.md)
 
-| Time | Action | Expected |
+| Step | Action | Expected |
 |------|--------|----------|
-| 0:00–0:20 | Show Aegis hero + F3/D2 claim | Brand + claim |
-| 0:20–0:40 | Scenario 1 · Benign PDF | **ALLOW** |
-| 0:40–1:10 | Scenario 2 · Injected PDF | **BLOCK** + twin drift |
-| 1:10–1:30 | Scenario 3 · Encoded HTML | **BLOCK** |
-| 1:30–1:50 | 4a roleplay → 4b tool abuse | **QUARANTINE/BLOCK** multi-step |
-| 1:50–2:00 | Quarantine + Audit | Human-in-the-loop |
+| 1 | Open live console / hero | Product overview |
+| 2 | Scenario 1 · Benign PDF | **ALLOW** |
+| 3 | Scenario 2 · Injected PDF | **BLOCK** + twin drift |
+| 4 | Scenario 3 · Encoded HTML | **BLOCK** |
+| 5 | Multi-step roleplay → tools | **QUARANTINE / BLOCK** |
+| 6 | Quarantine + Audit | Human-in-the-loop |
 
-**Closer line for judges:**  
-*“Everyone else ships a classifier. We ship a twin. If the document tries to make your agent steal secrets, the plans diverge — and Aegis blocks before a single tool runs.”*
+**Positioning line:**  
+*Everyone else ships a classifier. We ship a twin. If the document tries to make your agent steal secrets, the plans diverge — and Aegis blocks before a single tool runs.*
+
+Longer narrated demo (≈4:30): [`aegis/submission/Aegis_Guard_Demo_4min.mp4`](aegis/submission/Aegis_Guard_Demo_4min.mp4)
 
 ---
 
-## 15. Tests & corpus metrics
+## 14. Tests & corpus metrics
 
 ```bash
 make test
@@ -539,7 +502,7 @@ make corpus
 Corpus n=55  precision=1.000  recall=1.000  f1=1.000  accuracy=1.000
 ```
 
-Per-attack hits on the bundled corpus (all 100% on current suite):
+Per-attack hits on the bundled corpus (all covered on the current suite):
 
 - Instruction Override, Role Change, Secret Extraction, Tool Abuse  
 - Credential Theft, Indirect Prompt Injection, Encoded Instructions  
@@ -549,7 +512,7 @@ Corpus files live under `aegis/corpus/benign/` and `aegis/corpus/malicious/`.
 
 ---
 
-## 16. Configuration & environment
+## 15. Configuration & environment
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
@@ -557,28 +520,28 @@ Corpus files live under `aegis/corpus/benign/` and `aegis/corpus/malicious/`.
 | `AEGIS_LLM_BASE_URL` | `https://api.openai.com/v1` | OpenAI-compatible or Ollama base |
 | `AEGIS_LLM_MODEL` | `gpt-4o-mini` | Model name for optional planner |
 
-**No API key required** for the demo — the deterministic planner is the default and is what the corpus/tests use.
+**No API key required** for the default demo — the deterministic planner is what corpus and tests use.
 
-Gate thresholds (code constants in `firewall/risk.py`):
+Gate thresholds (in `firewall/risk.py`):
 
 - `BLOCK_THRESHOLD = 0.75`
 - `QUARANTINE_THRESHOLD = 0.45`
 
 ---
 
-## 17. Responsible AI & human-in-the-loop
+## 16. Responsible AI & human-in-the-loop
 
 - Untrusted document text never becomes the instruction channel (provenance)
 - Restricted tools fail closed via capability tokens
-- Ambiguous band → human analyst (matches hackathon “humans in the loop” theme)
-- Full audit trail for every decision (explainability for judges)
-- Fake secret vault only; no real credentials in the repo
+- Ambiguous band → human analyst review
+- Full audit trail for every decision
+- Demo vault only; no real credentials in the repo
 
 ---
 
-## 18. Business impact
+## 17. Business impact
 
-Accenture clients are shipping **tool-using agents** that read tickets, PDFs, vendor email, and web content. Indirect prompt injection turns those agents into exfil / abuse engines.
+Organizations are shipping **tool-using agents** that read tickets, PDFs, vendor email, and web content. Indirect prompt injection can turn those agents into exfiltration or abuse engines.
 
 Aegis is a **control plane** pattern:
 
@@ -591,26 +554,8 @@ Aegis is a **control plane** pattern:
 
 ---
 
-## 19. Submission checklist
+## 18. License
 
-See [`aegis/docs/SUBMISSION.md`](aegis/docs/SUBMISSION.md) and pitch outline [`aegis/docs/PITCH_OUTLINE.md`](aegis/docs/PITCH_OUTLINE.md).
+MIT
 
-- [x] Working prototype (this repository)
-- [x] Architecture document with F3/D2 justification
-- [x] Demo scenarios + script
-- [ ] Pitch deck PDF/PPT (build from outline)
-- [ ] 2-minute demo video (record from script)
-- [ ] Unstop upload: GitHub URL + deck + video
-
----
-
-## 20. License
-
-MIT — built for **ET AI Hackathon: Agentic Edition** (Problem 2).
-
----
-
-### Credits
-
-Built for The Economic Times × Accenture hackathon track on Unstop.  
-Product name **Aegis** — Behavioral Twin Prompt Injection Firewall.
+**Aegis Guard** — Behavioral Twin Prompt Injection Firewall
