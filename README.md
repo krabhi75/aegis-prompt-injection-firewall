@@ -403,14 +403,24 @@ ET-Hackethon/   (or your clone root)
 git clone https://github.com/krabhi75/aegis-prompt-injection-firewall.git
 cd aegis-prompt-injection-firewall
 
-make install    # creates .venv, installs deps, generates demo PDFs/HTML
+make install    # creates .venv, installs local deps (incl. Streamlit), demo fixtures
 
-# Terminal 1 — API
+# Terminal 1 — API (also used by Vercel entrypoint main.py)
 make api        # http://0.0.0.0:8000  (health: /health)
 
-# Terminal 2 — UI
+# Terminal 2 — local Streamlit analyst console
 make ui         # http://localhost:8501
 ```
+
+### Deployed demo (Vercel)
+
+Live UI + API from root `main.py` + `public/index.html` (Streamlit is local-only; Vercel serves the FastAPI web demo).
+
+```bash
+npx vercel --prod
+```
+
+Production URL is printed by the CLI after deploy.
 
 Open **http://localhost:8501** → tab **Demo Scenarios**.
 

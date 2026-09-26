@@ -7,7 +7,7 @@ PYTEST := $(VENV)/bin/pytest
 
 install:
 	python3 -m venv $(VENV)
-	$(PIP) install -r requirements.txt
+	$(PIP) install -r requirements-local.txt
 	cd aegis && PYTHONPATH=. ../$(PY) demos/generate_fixtures.py
 
 api:

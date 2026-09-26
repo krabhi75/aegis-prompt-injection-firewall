@@ -3,17 +3,27 @@
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-DB_PATH = Path(__file__).resolve().parent.parent / "data" / "aegis.db"
+
+def _db_path() -> Path:
+    # Vercel filesystem is ephemeral — use /tmp so writes succeed at runtime.
+    if os.getenv("VERCEL") or os.getenv("AEGIS_DB_PATH"):
+        return Path(os.getenv("AEGIS_DB_PATH", "/tmp/aegis.db"))
+    return Path(__file__).resolve().parent.parent / "data" / "aegis.db"
+
+
+DB_PATH = _db_path()
 
 
 def _connect() -> sqlite3.Connection:
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(str(DB_PATH))
+    path = _db_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(str(path))
     conn.row_factory = sqlite3.Row
     return conn
 
